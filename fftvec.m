@@ -15,7 +15,7 @@ function xf = fftvec(x, mn, varargin)
     for n=1:N, xf(:,n) = reshape(fft2(reshape(x(:,n), mn), pad(1), pad(2)), M, 1); end
   else
     xf = zeros(M, N);
-    for n=1:N,
+    for n=1:N
         xf(:,n) = reshape(fft2(reshape(x(:,n), mn)), M, 1);
     end
   end  

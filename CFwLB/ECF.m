@@ -9,8 +9,12 @@ MMf = prod(Mf);
 % get the lagrange multipliers
 mu    = 0.01;
 mumax = 20;
+lambda = 0.1;
 i = 1;
- o = zeros(maxItr,1);
+beta = 1.1;
+o = zeros(maxItr,1);
+% ZX = ZX / MMx;
+% ZZ = ZZ / MMx;
 % ----------------------------------------
 % ALTERNATION!
 % ----------------------------------------
@@ -19,9 +23,9 @@ while (i <=maxItr) || (1 > term && i <= maxItr)
 
     %   ADMM
     [sf] = argmin_s(df, mu, Ldsf, MMx, Nf, ZX, ZZ);
-    [df] = argmin_d(sf, mu, Ldsf, Mx, Mf);
+    [df] = argmin_d(sf, mu, Ldsf, Mx, Mf,lambda);
     Ldsf = Ldsf + (mu * (sf - df));
-    mu = min(1.1 * mu, mumax);
+    mu = min(beta * mu, mumax);
 
     % ----------------------------------------
     % Visualizing the filters
