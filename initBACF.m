@@ -4,7 +4,30 @@ model = {};
 param = readParam();
 %% calculate parameters
 % whether resize image not consist with BACF code
-resize_image = (sqrt(prod(target_sz)) >= param.upResize);
+% This should before everything
+t = sqrt(prod(target_sz));
+if  t >= param.lowResize && t<param.upResize
+    resize_image = true;
+    resize_scale = 2;
+elseif sqrt(prod(target_sz))>=param.upResize
+    resize_image = true;
+    resize_scale = 4;
+else
+    resize_image = false;
+    resize_scale = 1;
+end
+
+param.resize_image= resize_image;
+param.resize_scale= resize_scale;
+
+if resize_image
+    img = imresize(img,1/resize_scale);
+    pos = floor(pos / resize_scale);
+    target_sz = floor(target_sz / resize_scale);
+end
+
+model.firstImg = img;
+%% 
 
 s_filt_sz = floor(target_sz);
 b_filt_sz = floor(target_sz * (1 + param.padding));
@@ -34,18 +57,13 @@ model.yf = yf;%fft2(gaussian_shaped_labels(output_sigma, sz));
 
 param.window_sz = b_filt_sz;
 % param.output_sigma = output_sigma;
-param.resize_image= resize_image;
+
 param.cos_window = cos_window;
 % param.features.sz = sz;
 
 %create model
 
-% if resize_image
-%     img = imresize(img,0.5);
-%     pos = floor(pos / 2);
-%     target_sz = floor(target_sz / 2);
-% 
-% end
+
 
 %% initialization of first image
 patch = getPatch(img,pos,b_filt_sz, b_filt_sz);
