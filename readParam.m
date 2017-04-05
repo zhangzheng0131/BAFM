@@ -11,14 +11,19 @@ param.debug = 0;
 
 
 param.ADMM_iteration = 2;
-param.padding =2;
+param.padding =5;
 param.output_sigma_factor = 1/16;
 
 param.ini_imgs=1;
-param.etha = .025;
+param.etha = .013;
 param.upResize = 100;
 param.lowResize = 50;
 param.term = 1e-6;
+
+param.lambda = 0.001;
+param.beta = 10;
+param.mu=1;
+param.maxMu=1000;
 
 % 
 % %% here is nsamf parameters

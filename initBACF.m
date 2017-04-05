@@ -40,11 +40,11 @@ b_filt_sz = floor(target_sz * (1 + param.padding));
 output_sigma = sqrt(prod(s_filt_sz)) * param.output_sigma_factor;% /param.features.cell_size;
 
 sz = b_filt_sz;
-% cos_window = hann(sz(1)) *hann(sz(2))';	
-step =2;
-w1 = cos(linspace(-pi/step, pi/step, sz(1)));
-w2 = cos(linspace(-pi/step, pi/step, sz(2)));
-cos_window = w1' * w2;
+cos_window = hann(sz(1)) *hann(sz(2))';	
+% step =2;
+% w1 = cos(linspace(-pi/step, pi/step, sz(1)));
+% w2 = cos(linspace(-pi/step, pi/step, sz(2)));
+% cos_window = w1' * w2;
 
 
 [rs, cs] = ndgrid((1:sz(1)) - floor(sz(1)/2), (1:sz(2)) - floor(sz(2)/2));
@@ -80,11 +80,15 @@ patch = (double(patch) / 255) - 0.5;  %normalize to range -0.5 .. 0.5
 %     out = powerNormalise(double(out));
 data = cos_window .* patch;  %apply cosine window
 
-ini_imgs = get_ini_perturbation(data, 8);
 
 MMx = prod(b_filt_sz);
-ZX = zeros(MMx, 1);
-ZZ = zeros(MMx, 1);
+
+Nchannel = size(data,3);
+ZX = zeros(MMx, Nchannel);
+ZZ = zeros(MMx, Nchannel);
+
+ini_imgs = reshape(data,[MMx Nchannel]);%get_ini_perturbation(data, 8);
+
 
 
 ECFimageF = fftvec(ini_imgs, b_filt_sz);
@@ -100,7 +104,7 @@ Ldsf  = zeros(prod(b_filt_sz), 1);
   
 
 
-[df,sf, Ldsf, mu] = ECF(yf, b_filt_sz, 1, s_filt_sz, param.term, 1, param.ADMM_iteration, sf, df, Ldsf,ZZ,ZX, param.debug);
+[df,sf, Ldsf, mu] = ECF(yf, b_filt_sz, 1, s_filt_sz, param.term, 1, param.ADMM_iteration, sf, df, Ldsf,ZZ,ZX, param.debug,param);
 
 
 % 

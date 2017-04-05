@@ -1,17 +1,17 @@
 
 
-function [df sf Ldsf mu] = ECF(X, Mx, Nf, Mf, term, minItr, maxItr, sf, df, Ldsf, ZZ, ZX, Visfilt)
+function [df sf Ldsf mu] = ECF(X, Mx, Nf, Mf, term, minItr, maxItr, sf, df, Ldsf, ZZ, ZX, Visfilt,p)
 
 [MMx Nx] = size(X);
 MMf = prod(Mf);
 % Visfilt = 0;
 % ----------------------------------------
 % get the lagrange multipliers
-mu    = 0.01;
-mumax = 20;
-lambda = 0.1;
+mu    = p.mu;
+mumax = p.maxMu;
+lambda = p.lambda;
 i = 1;
-beta = 1.1;
+beta = p.beta;
 o = zeros(maxItr,1);
 % ZX = ZX / MMx;
 % ZZ = ZZ / MMx;
