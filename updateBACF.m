@@ -2,10 +2,14 @@ function [model,param] = updateBACF(img,pos,target_sz,model,param)
 
 
 b_filt_sz = model.b_filt_sz;
-cropIm = getPatch(img,pos,b_filt_sz, b_filt_sz);
-cropIm = (double(cropIm) / 255) - 0.5;  %normalize to range -0.5 .. 0.5
+cropIm = getPatch(img,pos,param.window_sz, param.window_sz);
+% cropIm = (double(cropIm) / 255) - 0.5;  %normalize to range -0.5 .. 0.5
 %     out = powerNormalise(double(out));
-x = param.cos_window .* cropIm;  %apply cosine window
+% x = param.cos_window .* cropIm;  %apply cosine window
+
+
+cropIm = prepareData(cropIm, param.features);
+x = calculateFeatures(cropIm, param.features,param.cos_window);
 
 MMx = prod(b_filt_sz);
 Nchannel = size(x,3);
