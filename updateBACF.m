@@ -7,7 +7,12 @@ cropIm = (double(cropIm) / 255) - 0.5;  %normalize to range -0.5 .. 0.5
 %     out = powerNormalise(double(out));
 x = param.cos_window .* cropIm;  %apply cosine window
 
-xf = fftvec(x(:), b_filt_sz);
+MMx = prod(b_filt_sz);
+Nchannel = size(x,3);
+
+x = reshape(x,[MMx Nchannel]);%get_ini_perturbation(data, 8);
+
+xf = fftvec(x, b_filt_sz);
 model.ZX = ((1-param.etha) * model.ZX) + (param.etha *  conj(xf) .* model.yf);
 model.ZZ = ((1-param.etha) * model.ZZ) + (param.etha * conj(xf) .* xf);
 [df sf Ldsf mu] = ECF(model.yf, b_filt_sz, 1, model.s_filt_sz, param.term, 1,...

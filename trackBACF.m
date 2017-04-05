@@ -7,6 +7,14 @@ cropIm = (double(cropIm) / 255) - 0.5;  %normalize to range -0.5 .. 0.5
 %     out = powerNormalise(double(out));
 cropIm = param.cos_window .* cropIm;  %apply cosine window
 
+
+MMx = prod(b_filt_sz);
+Nchannel = size(cropIm,3);
+
+cropIm = reshape(cropIm,[MMx Nchannel]);%get_ini_perturbation(data, 8);
+
+
+
 [rsp, posRsp] = get_rsp((double(cropIm)), model.df, model.s_filt_sz, model.b_filt_sz); %gcf
 
 %% for debug

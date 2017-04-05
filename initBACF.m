@@ -93,18 +93,17 @@ ini_imgs = reshape(data,[MMx Nchannel]);%get_ini_perturbation(data, 8);
 
 ECFimageF = fftvec(ini_imgs, b_filt_sz);
 
-for n = 1:size(ini_imgs, 2)
-    ZX = ZX + bsxfun(@times, conj(ECFimageF(:,n)), yf);
-    ZZ = ZZ + bsxfun(@times, conj(ECFimageF(:,n)), ECFimageF(:,n));
-end
+ZX = ZX + bsxfun(@times, conj(ECFimageF), yf);
+ZZ = ZZ + bsxfun(@times, conj(ECFimageF), ECFimageF);
 
-df = zeros(prod(b_filt_sz), 1);
-sf = zeros(prod(b_filt_sz), 1);
-Ldsf  = zeros(prod(b_filt_sz), 1);
+
+df = zeros(prod(b_filt_sz), Nchannel);
+sf = zeros(prod(b_filt_sz), Nchannel);
+Ldsf  = zeros(prod(b_filt_sz), Nchannel);
   
 
 
-[df,sf, Ldsf, mu] = ECF(yf, b_filt_sz, 1, s_filt_sz, param.term, 1, param.ADMM_iteration, sf, df, Ldsf,ZZ,ZX, param.debug,param);
+[df,sf, Ldsf, mu] = ECF(yf, b_filt_sz, Nchannel, s_filt_sz, param.term, 1, param.ADMM_iteration, sf, df, Ldsf,ZZ,ZX, param.debug,param);
 
 
 % 
