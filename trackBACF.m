@@ -2,10 +2,10 @@ function [pos,target_sz,param] = trackBACF(img,model,param)
 
 pos = model.last_pos;
 b_filt_sz = model.b_filt_sz;
-cropIm = getPatch(img,pos,param.window_sz, param.window_sz);
+x = getPatch(img,pos,param.window_sz, param.window_sz);
 
 
-cropIm = prepareData(cropIm, param.features);
+cropIm = prepareData(x, param.features);
 cropIm = calculateFeatures(cropIm, param.features,param.cos_window);
 
 
@@ -14,6 +14,8 @@ cropIm = calculateFeatures(cropIm, param.features,param.cos_window);
 % cropIm = param.cos_window .* cropIm;  %apply cosine window
 
 
+param.display={};
+param.display{1}=cropIm;
 MMx = prod(b_filt_sz);
 Nchannel = size(cropIm,3);
 
@@ -21,6 +23,9 @@ cropIm = reshape(cropIm,[MMx Nchannel]);%get_ini_perturbation(data, 8);
 
 
 [rsp, posRsp] = get_rsp((double(cropIm)), model.df, model.s_filt_sz, model.b_filt_sz); %gcf
+
+
+pos = pos + param.features.cell_size * posRsp;
 
 %% for debug
 % rspTmp = rsp(posRsp(1)-floor(s_filt_sz(1)/2):posRsp(1)+floor(s_filt_sz(1)/2), ...
@@ -30,7 +35,7 @@ cropIm = reshape(cropIm,[MMx Nchannel]);%get_ini_perturbation(data, 8);
 %             posRsp(2)-floor(s_filt_sz(2)/2):posRsp(2)+floor(s_filt_sz(2)/2));
 
 % [row, col] = find(rsp == max(rsp(:)), 1);
-pos = pos  + (posRsp- floor(b_filt_sz/2)).*param.features.cell_size;
+% pos = pos  + (posRsp- floor(b_filt_sz/2)).*param.features.cell_size;
 
 % if resize_image
 %     dis= sqrt(sum((pos*resize_scale - ground_truth(frame,:)*resize_scale).^2));

@@ -49,7 +49,9 @@ cos_window = hann(b_filt_sz(1)) *hann(b_filt_sz(2))';
 
 [rs, cs] = ndgrid((1:b_filt_sz(1)) - floor(b_filt_sz(1)/2), (1:b_filt_sz(2)) - floor(b_filt_sz(2)/2));
 y = exp(-0.5 / output_sigma^2 * (rs.^2 + cs.^2));
-y = circshift(y, fix(s_filt_sz/2));
+y = circshift(y, -floor(b_filt_sz/2)+1);
+assert(y(1,1) == 1)
+
 yf = fftvec(y(:), b_filt_sz);
 
 

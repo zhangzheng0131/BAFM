@@ -15,10 +15,12 @@ function x = ifftvec(xf, mn, varargin)
     x = zeros(M, N);
     for n=1:N
         ff=ifft2(reshape(xf(:,n), mn),'symmetric');
-        x(:,n) = reshape(ff( 1:crop(1), 1:crop(2)), M, 1); 
+%        x(:,n) = reshape(ff( 1:crop(1), 1:crop(2)), M, 1); 
+         x(:,n) = reshape(cropping(ff,mn,crop), M, 1); 
     end
   else
     x = zeros(M, N);
     for n=1:N, x(:,n) = reshape(ifft2(reshape(xf(:,n), mn),'symmetric'), M, 1); end
   end  
 end
+

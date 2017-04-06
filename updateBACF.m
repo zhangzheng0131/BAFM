@@ -24,5 +24,7 @@ model.ZZ = ((1-param.etha) * model.ZZ) + (param.etha * conj(xf) .* xf);
 model.df=df;
 model.sf=sf;
 model.Ldsf=Ldsf;
+model.last_pos=pos;
+model.last_target_sz = target_sz;
 
 end
