@@ -11,7 +11,7 @@ param.debug = 0;
 
 
 param.ADMM_iteration = 2;
-param.padding =2;
+param.padding =5;
 param.output_sigma_factor = 1/16;
 
 param.ini_imgs=1;
@@ -39,7 +39,7 @@ param.maxMu=1000;
 param.features.colorUpdateRate = 0.01;
         
       
-types = {'greyHoG'};%,'grey','colorProb','colorProbHoG','lbp'  ,'colorName','greyProb'
+types = {'greyHoG'};%'greyHoG','grey','colorProb','colorProbHoG','lbp'  ,'colorName','greyProb'
 param.features.types=types;
 param.features.hog_orientations = 9;
 param.features.nbin =10;

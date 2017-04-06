@@ -36,6 +36,7 @@ if param.features.colorProbHoG || param.features.greyHoG
     b_filt_sz=floor(sz / param.features.cell_size);
 else
     param.features.cell_size = 1;
+    b_filt_sz = sz;
 end
 output_sigma = sqrt(prod(s_filt_sz)) * param.output_sigma_factor;% /param.features.cell_size;
 

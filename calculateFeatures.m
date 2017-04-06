@@ -3,14 +3,14 @@ function data = calculateFeatures(rawdata, features,cos_window)
     id = 1;
 
     if features.grey 
-       x= rawdata.gImg;
-       if ~equalSZ(x,features.sz)
-           x = imresize(x,features.sz);
-       end
-       x= x - mean(x(:));
+       x= rawdata.patch;
+%        if ~equalSZ(x,features.sz)
+%            x = imresize(x,features.sz);
+%        end
+       x= (double(x) / 255) - 0.5;
        x = bsxfun(@times, x, cos_window);
 %        data{5} =x;
-       data{id} = x;
+       data = x;
        id =id +1;
  
     end
