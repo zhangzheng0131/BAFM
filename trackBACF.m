@@ -13,9 +13,10 @@ cropIm = calculateFeatures(cropIm, param.features,param.cos_window);
 %     out = powerNormalise(double(out));
 % cropIm = param.cos_window .* cropIm;  %apply cosine window
 
-
+% 
 param.display={};
-param.display{1}=cropIm;
+param.display{1}=x;
+% param.display{2}=cropIm(:,:,3);
 MMx = prod(b_filt_sz);
 Nchannel = size(cropIm,3);
 

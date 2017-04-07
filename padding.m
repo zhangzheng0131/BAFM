@@ -1,6 +1,6 @@
 function r = padding(x,mn,pad)
 
-delta = floor((pad - mn)/2);
+delta = fix((pad - mn)/2);
 
 r=padarray(x,delta); 
 

@@ -1,6 +1,6 @@
 function r = cropping(x,mn,crop)
     
-delta = floor((crop - mn)/2);
+delta = fix((crop - mn)/2);
 
 tmp = circshift(x,delta);
 
