@@ -27,6 +27,7 @@ end
 
 time = 0 ;
 for frame=2:numel(img_files)
+%     frame=2;
     img = imread([video_path img_files{frame}]);
 %     if size(img,3)>1
 %         img = rgb2gray(img);

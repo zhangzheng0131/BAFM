@@ -16,6 +16,7 @@ cropIm = calculateFeatures(cropIm, param.features,param.cos_window);
 % 
 param.display={};
 param.display{1}=x;
+
 % param.display{2}=cropIm(:,:,3);
 MMx = prod(b_filt_sz);
 Nchannel = size(cropIm,3);
@@ -24,8 +25,8 @@ cropIm = reshape(cropIm,[MMx Nchannel]);%get_ini_perturbation(data, 8);
 
 
 [rsp, posRsp] = get_rsp((double(cropIm)), model.df, model.s_filt_sz, model.b_filt_sz); %gcf
-
-
+param.display_rsp={};
+param.display_rsp{1}=fftshift(rsp);
 pos = pos + param.features.cell_size * posRsp;
 
 %% for debug

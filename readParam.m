@@ -39,7 +39,7 @@ param.maxMu=1000;
 param.features.colorUpdateRate = 0.01;
         
       
-types = {'greyHoG'};%'greyHoG','grey','colorProb','colorProbHoG','lbp'  ,'colorName','greyProb'
+types = {'grey'};%'greyHoG','grey','colorProb','colorProbHoG','lbp'  ,'colorName','greyProb'
 param.features.types=types;
 param.features.hog_orientations = 9;
 param.features.nbin =10;

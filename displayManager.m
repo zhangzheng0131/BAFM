@@ -33,11 +33,29 @@ if param.visualization
         end
     end
     
-    if isfield(param,'dispaly'),  %create it for the first time,'Parent',axes_h
-        set(param.rect_h, 'Visible', 'on', 'Position', rect);
-
-        param.rect_h = rectangle('Position',rect, 'EdgeColor','g','LineWidth',2);
+    if isfield(param,'display_rsp'),  %create it for the first time,'Parent',axes_h
+       
+        if isfield(param,'model_rsp_hs'),  %create image
+            n = numel(param.model_rsp_hs);
+            for i=1:n
+                set(param.model_rsp_hs{i}, 'CData', param.display_rsp{i})
+            end
+        else  %just update it, 'Parent',axes_h
+            n = numel(param.display_rsp);
+            param.model_rsp_hs={};
+            for i=1:n
+                figure
+                param.model_rsp_hs{i} = imagesc(abs(param.display_rsp{i}));
+            end
+            
+        end
     end
+    
+%     if isfield(param,'dispaly'),  %create it for the first time,'Parent',axes_h
+%         set(param.rect_h, 'Visible', 'on', 'Position', rect);
+% 
+%         param.rect_h = rectangle('Position',rect, 'EdgeColor','g','LineWidth',2);
+%     end
     
         
     drawnow

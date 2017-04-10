@@ -1,12 +1,12 @@
 function data = calculateFeatures(rawdata, features,cos_window)
-    data={};
+    data=[];
     id = 1;
 
     if features.grey 
        x= rawdata.patch;
-%        if ~equalSZ(x,features.sz)
-%            x = imresize(x,features.sz);
-%        end
+       if ~equalSZ(x,features.sz)
+           x = imresize(x,features.sz);
+       end
        x= (double(x) / 255) - 0.5;
        x = bsxfun(@times, x, cos_window);
 %        data{5} =x;
@@ -47,8 +47,8 @@ function data = calculateFeatures(rawdata, features,cos_window)
            x = imresize(x,features.sz);
        end
        x = get_feature_map(x, 'cn', features.w2c);
-      x = bsxfun(@times, x, cos_window);
-      data{2} =cat(3,data{2},x);
+       x = bsxfun(@times, x, cos_window);
+       data =cat(3,data,x);
 %         data{id} = x; % %
 %         id =id +1;
     end
@@ -58,7 +58,7 @@ function data = calculateFeatures(rawdata, features,cos_window)
         x(:,:,end) = [];
         x = bsxfun(@times, x, cos_window);
 %         data{1} =cat(3,data{1},x);
-        data = x;
+        data = cat(3,data,x);
         id =id +1;
     end
 
