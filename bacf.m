@@ -5,7 +5,7 @@
 function [rects, time] = bacf(video_path, img_files, pos, target_sz,datasetParam)
 
 addpath('./CFwLB');
-% addpath('./utility');
+addpath('./dsst');
 % addpath('./features');
 % addpath('./display');
 
@@ -38,9 +38,9 @@ for frame=2:numel(img_files)
 
 
     tic
-    [pos,target_sz,param] = trackBACF(img,model,param);
+    [pos,target_sz,currentScale,param] = trackBACF(img,model,param);
     
-    [model,param] = updateBACF(img,pos,target_sz,model,param);
+    [model,param] = updateBACF(img,pos,target_sz,currentScale,model,param);
     
     
     rect = [pos([2,1]) - target_sz([2,1])/2, target_sz([2,1])];

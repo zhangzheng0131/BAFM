@@ -21,6 +21,7 @@ param.lowResize = 50;
 param.term = 1e-6;
 
 param.lambda = 0.001;
+param.slambda = 1e-2;
 param.beta = 10;
 param.mu=1;
 param.maxMu=1000;
@@ -79,6 +80,24 @@ for i=1:numel(types)
     
 end
 
+%% use DSST scale
+% DSST default settings
+% params.number_of_scales = 17;           % number of scale levels
+% params.number_of_interp_scales = 33;    % number of scale levels after interpolation
+% params.scale_model_factor = 1.0;        % relative size of the scale sample
+% params.scale_step = 1.02;               % Scale increment factor (denoted "a" in the paper)
+% params.scale_model_max_area = 512;      % the maximum size of scale examples
+% params.s_num_compressed_dim = 'MAX';    % number of compressed scale feature dimensions
+% params.scale_sigma_factor = 1/16;
+
+param.nScales = 17;
+param.nScalesInterp = 33;
+param.scale_step = 1.02;
+param.scale_sigma_factor = 1/16;
+param.scale_model_factor = 1.0;
+param.scale_model_max_area = 512;
+param.s_num_compressed_dim = 'MAX';
+param.interp_factor = 0.025;
 
 param.search_size = [1 0.985 0.99 0.995 1.005 1.01 1.015];%
 

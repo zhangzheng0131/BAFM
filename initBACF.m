@@ -27,9 +27,12 @@ if resize_image
 end
 
 model.firstImg = img;
+
+model.currentScaleFactor = 1.0;
 %% 
 
 s_filt_sz = floor(target_sz);
+param.base_target_sz = target_sz;
 sz = floor(target_sz * (1 + param.padding));
 if param.features.colorProbHoG || param.features.greyHoG
     s_filt_sz=floor(s_filt_sz / param.features.cell_size);
@@ -68,7 +71,7 @@ param.features.sz = b_filt_sz;
 
 
 %% initialization of first image
-patch = getPatch(img,pos,sz, sz);
+patch = getPatch(img,pos,sz, sz,model.currentScaleFactor);
 if size(patch,3)==1
     param.features.colorProb=0;
     param.features.colorProbHoG=0;
@@ -114,6 +117,105 @@ Ldsf  = zeros(prod(b_filt_sz), Nchannel);
 % 
 % model.model_alphaf = alphaf;
 % model.model_xf = xf;
+
+
+
+%% scale
+if param.nScales > 0
+    
+%     param.nScales = 17;
+% param.nScalesInterp = 33;
+% param.scale_step = 1.02;
+% param.scale_sigma_factor = 1/16;
+% param.scale_model_factor = 1.0;
+% param.scale_model_max_area = 512;
+
+
+    scale_sigma = param.nScalesInterp * param.scale_sigma_factor;
+    
+    scale_exp = (-floor((param.nScales-1)/2):ceil((param.nScales-1)/2)) * param.nScalesInterp/param.nScales;
+    scale_exp_shift = circshift(scale_exp, [0 -floor((param.nScales-1)/2)]);
+    
+    interp_scale_exp = -floor((param.nScalesInterp-1)/2):ceil((param.nScalesInterp-1)/2);
+    interp_scale_exp_shift = circshift(interp_scale_exp, [0 -floor((param.nScalesInterp-1)/2)]);
+    
+    param.scaleSizeFactors = param.scale_step .^ scale_exp;
+    param.interpScaleFactors = param.scale_step .^ interp_scale_exp_shift;
+    
+    ys = exp(-0.5 * (scale_exp_shift.^2) /scale_sigma^2);
+    model.ysf = single(fft(ys));
+    param.scale_window = single(hann(size(model.ysf,2)))';
+    
+    %make sure the scale model is not to large, to save computation time
+    if param.scale_model_factor^2 * prod(target_sz) > param.scale_model_max_area
+        param.scale_model_factor = sqrt(param.scale_model_max_area/prod(target_sz));
+    end
+    
+    %set the scale model size
+    param.scale_model_sz = floor(target_sz * param.scale_model_factor);
+    
+    
+    %force reasonable scale changes
+    param.min_scale_factor = param.scale_step ^ ceil(log(max(5 ./ sz)) / log(param.scale_step));
+    param.max_scale_factor = param.scale_step ^ floor(log(min([size(img,1)...
+        size(img,2)] ./ target_sz)) / log(param.scale_step));
+    
+    param.max_scale_dim = strcmp(param.s_num_compressed_dim,'MAX');
+    if param.max_scale_dim
+        param.s_num_compressed_dim = length(param.scaleSizeFactors);
+    else
+        param.s_num_compressed_dim = params.s_num_compressed_dim;
+    end
+    
+    %% update
+    
+    %create a new feature projection matrix
+    [xs_pca, xs_npca] = get_scale_subwindow(img, pos, param.base_target_sz, ...
+        model.currentScaleFactor*param.scaleSizeFactors, param.scale_model_sz);
+
+    s_num = xs_pca;
+    model.s_num=s_num;
+%         if frame == 1
+%             s_num = xs_pca;
+%         else
+%             s_num = (1 - interp_factor) * s_num + interp_factor * xs_pca;
+%         end;
+
+    bigY = s_num;
+    bigY_den = xs_pca;
+
+    if param.max_scale_dim
+        [scale_basis, ~] = qr(bigY, 0);
+        [scale_basis_den, ~] = qr(bigY_den, 0);
+    else
+        [U,~,~] = svd(bigY,'econ');
+        scale_basis = U(:,1:s_num_compressed_dim);
+    end
+    model.scale_basis = scale_basis';
+
+    %create the filter update coefficients
+    sf_proj = fft(feature_projection_scale([],s_num,model.scale_basis,param.scale_window),[],2);
+    model.sf_num = bsxfun(@times,model.ysf,conj(sf_proj));
+
+    xs = feature_projection_scale(xs_npca,xs_pca,scale_basis_den',param.scale_window);
+    xsf = fft(xs,[],2);
+    new_sf_den = sum(xsf .* conj(xsf),1);
+
+    model.sf_den = new_sf_den;
+%         if frame == 1
+%             sf_den = new_sf_den;
+%         else
+%             sf_den = (1 - interp_factor) * sf_den + interp_factor * new_sf_den;
+%         end;
+
+    
+    
+end
+
+
+%%
+
+
 
 model.df = df;
 model.sf = sf;
