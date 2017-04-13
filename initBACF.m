@@ -168,47 +168,7 @@ if param.nScales > 0
     end
     
     %% update
-    
-    %create a new feature projection matrix
-    [xs_pca, xs_npca] = get_scale_subwindow(img, pos, param.base_target_sz, ...
-        model.currentScaleFactor*param.scaleSizeFactors, param.scale_model_sz);
-
-    s_num = xs_pca;
-    model.s_num=s_num;
-%         if frame == 1
-%             s_num = xs_pca;
-%         else
-%             s_num = (1 - interp_factor) * s_num + interp_factor * xs_pca;
-%         end;
-
-    bigY = s_num;
-    bigY_den = xs_pca;
-
-    if param.max_scale_dim
-        [scale_basis, ~] = qr(bigY, 0);
-        [scale_basis_den, ~] = qr(bigY_den, 0);
-    else
-        [U,~,~] = svd(bigY,'econ');
-        scale_basis = U(:,1:s_num_compressed_dim);
-    end
-    model.scale_basis = scale_basis';
-
-    %create the filter update coefficients
-    sf_proj = fft(feature_projection_scale([],s_num,model.scale_basis,param.scale_window),[],2);
-    model.sf_num = bsxfun(@times,model.ysf,conj(sf_proj));
-
-    xs = feature_projection_scale(xs_npca,xs_pca,scale_basis_den',param.scale_window);
-    xsf = fft(xs,[],2);
-    new_sf_den = sum(xsf .* conj(xsf),1);
-
-    model.sf_den = new_sf_den;
-%         if frame == 1
-%             sf_den = new_sf_den;
-%         else
-%             sf_den = (1 - interp_factor) * sf_den + interp_factor * new_sf_den;
-%         end;
-
-    
+    [ param,model ] = scaleUpdate( img,pos,param,model,1 );
     
 end
 
