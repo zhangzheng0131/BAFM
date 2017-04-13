@@ -1,5 +1,4 @@
 
-
 function [df sf Ldsf mu] = ECF(X, Mx, Nf, Mf, term, minItr, maxItr, sf, df, Ldsf, ZZ, ZX, Visfilt,p)
 
 [MMx Nx] = size(X);

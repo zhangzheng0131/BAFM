@@ -67,50 +67,16 @@ param.cos_window = cos_window;
 param.features.sz = b_filt_sz;
 
 %create model
-
-
-
-%% initialization of first image
-patch = getPatch(img,pos,sz, sz,model.currentScaleFactor);
-if size(patch,3)==1
+if size(img,3)==1
     param.features.colorProb=0;
     param.features.colorProbHoG=0;
     param.features.colorName = 0;
 end
-% param.features = updateFeatures(patch, param.features);
-rawdata = prepareData(patch, param.features);
-data = calculateFeatures(rawdata, param.features,param.cos_window);
-
-% patch = (double(patch) / 255) - 0.5;  %normalize to range -0.5 .. 0.5
-%     out = powerNormalise(double(out));
-% data = cos_window .* data;  %apply cosine window
+model.s_filt_sz=s_filt_sz;
+model.b_filt_sz=b_filt_sz;
 
 
-MMx = prod(b_filt_sz);
-
-Nchannel = size(data,3);
-ZX = zeros(MMx, Nchannel);
-ZZ = zeros(MMx, Nchannel);
-
-ini_imgs = reshape(data,[MMx Nchannel]);%get_ini_perturbation(data, 8);
-
-
-
-ECFimageF = fftvec(ini_imgs, b_filt_sz);
-
-ZX = ZX + bsxfun(@times, conj(ECFimageF), yf);
-ZZ = ZZ + bsxfun(@times, conj(ECFimageF), ECFimageF);
-
-
-df = zeros(prod(b_filt_sz), Nchannel);
-sf = zeros(prod(b_filt_sz), Nchannel);
-Ldsf  = zeros(prod(b_filt_sz), Nchannel);
-  
-
-
-[df,sf, Ldsf, mu] = ECF(yf, b_filt_sz, Nchannel, s_filt_sz, param.term, 1, param.ADMM_iteration, sf, df, Ldsf,ZZ,ZX, param.debug,param);
-
-
+%% initialization of first image
 % 
 % [xf, alphaf] = calculateModel(data,model,param);
 % 
@@ -118,7 +84,7 @@ Ldsf  = zeros(prod(b_filt_sz), Nchannel);
 % model.model_alphaf = alphaf;
 % model.model_xf = xf;
 
-
+model = optimizeFilters( img, pos, model.currentScaleFactor, param,model, 1 );
 
 %% scale
 if param.nScales > 0
@@ -174,20 +140,9 @@ end
 
 
 %%
-
-
-
-model.df = df;
-model.sf = sf;
-model.Ldsf = Ldsf;
-
-
-model.ZX = ZX;
-model.ZZ = ZZ;
 model.last_pos=pos;
 model.last_target_sz = target_sz;
-model.s_filt_sz=s_filt_sz;
-model.b_filt_sz=b_filt_sz;
+
 
 
 
