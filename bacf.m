@@ -35,8 +35,6 @@ for frame=2:numel(img_files)
     if param.resize_image
         img = imresize(img,1/param.resize_scale);
     end
-
-
     tic
     [pos,target_sz,currentScale,param] = trackBACF(img,model,param);
     

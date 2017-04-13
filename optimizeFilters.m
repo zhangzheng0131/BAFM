@@ -22,6 +22,7 @@ xf = fftvec(x, b_filt_sz);
 if isInit
     model.ZX = bsxfun(@times, conj(xf), model.yf);
     model.ZZ = bsxfun(@times, conj(xf), xf);
+    model.X = xf;
     model.df = zeros(prod(b_filt_sz), Nchannel);
     model.sf = zeros(prod(b_filt_sz), Nchannel);
     model.Ldsf  = zeros(prod(b_filt_sz), Nchannel);
@@ -29,11 +30,12 @@ if isInit
 else
     model.ZX = ((1-param.etha) * model.ZX) + (param.etha *  conj(xf) .* model.yf);
     model.ZZ = ((1-param.etha) * model.ZZ) + (param.etha * conj(xf) .* xf);
+    model.X = ((1-param.etha) * model.X) + (param.etha * xf);
 end
 
 [model.df, model.sf, model.Ldsf, mu] = ECF(model.yf, b_filt_sz, Nchannel,...
     model.s_filt_sz, param.term, 1,param.ADMM_iteration, model.sf, model.df,...
-    model.Ldsf,model.ZZ,model.ZX, param.debug,param);
+    model.Ldsf,model.ZZ,model.ZX, param.debug,param,model);
 
 
 

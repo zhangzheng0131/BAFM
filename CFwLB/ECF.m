@@ -1,5 +1,6 @@
 
-function [df sf Ldsf mu] = ECF(X, Mx, Nf, Mf, term, minItr, maxItr, sf, df, Ldsf, ZZ, ZX, Visfilt,p)
+function [df sf Ldsf mu] = ECF(X, Mx, Nf, Mf, term, minItr, maxItr, sf, df,...
+    Ldsf, ZZ, ZX, Visfilt,p,model)
 
 [MMx Nx] = size(X);
 MMf = prod(Mf);
@@ -17,11 +18,13 @@ o = zeros(maxItr,1);
 % ----------------------------------------
 % ALTERNATION!
 % ----------------------------------------
-
+% maxItr =10;
 while (i <=maxItr) || (1 > term && i <= maxItr)
 
     %   ADMM
-    [sf] = argmin_s(df, mu, Ldsf, MMx, Nf, ZX, ZZ);
+    % g in the paper
+    [sf] = argmin_s(df, mu, Ldsf, MMx, Nf, ZX, ZZ,model);
+    % h in the paper
     [df] = argmin_d(sf, mu, Ldsf, Mx, Mf,lambda);
     Ldsf = Ldsf + (mu * (sf - df));
     mu = min(beta * mu, mumax);
@@ -47,11 +50,12 @@ while (i <=maxItr) || (1 > term && i <= maxItr)
         end
         pause(.05);
     end;
-%     o(i) =  objective(df, MMx, Nx, Nf, X, ZX, ZZ);
+    o(i) =  objective(df, MMx, Nx, Nf, X, ZX, ZZ);
     i = i+1;
 
 end
-% figure(4); plot(o);
+% figure(10); plot(o);
+a=min(o)
 end
 
 % ----------------------------------------
