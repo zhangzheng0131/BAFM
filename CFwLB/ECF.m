@@ -50,12 +50,12 @@ while (i <=maxItr) || (1 > term && i <= maxItr)
         end
         pause(.05);
     end;
-    o(i) =  objective(df, MMx, Nx, Nf, X, ZX, ZZ);
+%     o(i) =  objective(df, MMx, Nx, Nf, X, ZX, ZZ);
     i = i+1;
 
 end
 % figure(10); plot(o);
-a=min(o)
+% a=min(o)
 end
 
 % ----------------------------------------

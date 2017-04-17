@@ -11,11 +11,12 @@ param.debug = 0;
 
 
 param.ADMM_iteration = 2;
-param.padding =3;
+param.search_area_scale =5;
+param.filter_size = 0.2;
 param.output_sigma_factor = 1/16;
 
-param.ini_imgs=1;
-param.etha = .013;
+param.ini_imgs=8;
+param.etha = .0125;
 param.upResize = 100;
 param.lowResize = 50;
 param.term = 1e-6;
@@ -25,6 +26,9 @@ param.slambda = 1e-2;
 param.beta = 10;
 param.mu=1;
 param.maxMu=1000;
+
+
+param.search_area_shape = 'square';
 
 % 
 % %% here is nsamf parameters
