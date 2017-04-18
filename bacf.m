@@ -19,7 +19,7 @@ firstImg = imread([video_path img_files{1}]);
 totalFames = numel(img_files);
 
 rects = zeros(totalFames,4);
-rects(1,:) = [model.last_pos([2,1]) - model.last_target_sz([2,1])/2, model.last_target_sz([2,1])];
+rects(1,:) = [pos([2,1]) - target_sz([2,1])/2, target_sz([2,1])];
 
 if isempty(datasetParam)
     param = displayManager(model.firstImg,rects(1,:),model,param);

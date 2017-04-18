@@ -7,11 +7,11 @@ param = readParam();
 % This should before everything
 t = sqrt(prod(target_sz));
 if  t >= param.lowResize && t<param.upResize
-    resize_image = true;
-    resize_scale = 2;
+    resize_image = false;
+    resize_scale = 1;
 elseif sqrt(prod(target_sz))>=param.upResize
-    resize_image = true;
-    resize_scale = 4;
+    resize_image = false;
+    resize_scale = 1;
 else
     resize_image = false;
     resize_scale = 1;
@@ -28,30 +28,43 @@ end
 
 model.firstImg = img;
 
-model.currentScaleFactor = 1.0;
 %% 
 
-s_filt_sz = floor(target_sz*(1+param.filter_size));
-param.base_target_sz = target_sz;
+
+
+search_area = prod(target_sz * param.search_area_scale);
+
+if search_area > param.max_image_sample_size
+    model.currentScaleFactor = sqrt(search_area / param.max_image_sample_size);
+elseif search_area < param.min_image_sample_size
+    model.currentScaleFactor = sqrt(search_area / param.min_image_sample_size);
+else
+    model.currentScaleFactor = 1.0;
+end
+
+% target size at the initial scale
+target_sz = target_sz / model.currentScaleFactor;
+
+
 % sz = floor(target_sz * (1 + param.padding));
 %window size, taking padding into account
 switch param.search_area_shape
     case 'proportional'
-        sz = floor( param.base_target_sz * param.search_area_scale);     % proportional area, same aspect ratio as the target
+        sz = floor( target_sz * param.search_area_scale);     % proportional area, same aspect ratio as the target
     case 'square'
-        sz = repmat(sqrt(prod(param.base_target_sz * param.search_area_scale)), 1, 2); % square area, ignores the target aspect ratio
+        sz = repmat(sqrt(prod(target_sz * param.search_area_scale)), 1, 2); % square area, ignores the target aspect ratio
     case 'fix_padding'
-        sz = param.base_target_sz + sqrt(prod(param.base_target_sz * param.search_area_scale) + (param.base_target_sz(1) - param.base_target_sz(2))/4) - sum(param.base_target_sz)/2; % const padding
+        sz = target_sz + sqrt(prod(target_sz * param.search_area_scale) + (target_sz(1) - target_sz(2))/4) - sum(target_sz)/2; % const padding
     case 'custom'
-        sz = [param.base_target_sz(1)*2 param.base_target_sz(2)*4]; % for testing
+        sz = [target_sz(1)*2 target_sz(2)*4]; % for testing
 end
-
 
 if param.features.colorProbHoG || param.features.greyHoG
-    param.features.cell_size = 4;
+    param.features.cell_size = 1;
 else
-    param.features.cell_size = 4;
+    param.features.cell_size = 1;
 end
+s_filt_sz = floor(target_sz*param.filter_size);
 s_filt_sz=floor(s_filt_sz / param.features.cell_size);
 b_filt_sz=floor(sz / param.features.cell_size);
 output_sigma = sqrt(prod(s_filt_sz)) * param.output_sigma_factor;% /param.features.cell_size;
@@ -78,7 +91,7 @@ param.window_sz = sz;
 
 param.cos_window = cos_window;
 param.features.sz = b_filt_sz;
-
+param.base_target_sz = target_sz;
 %create model
 if size(img,3)==1
     param.features.colorProb=0;

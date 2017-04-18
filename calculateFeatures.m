@@ -54,10 +54,13 @@ function data = calculateFeatures(rawdata, features,cos_window)
     end
         
     if features.greyHoG
-        x = double(fhog(single(rawdata.gImg), features.cell_size, features.hog_orientations));
-        x(:,:,end) = [];
-        x = bsxfun(@times, x, cos_window);
+%         x = double(fhog(single(rawdata.gImg), features.cell_size, features.hog_orientations));
+%         x(:,:,end) = [];
+%         x = bsxfun(@times, x, cos_window);
 %         data{1} =cat(3,data{1},x);
+        nor_im = powerNormalise(double(rawdata.grey));
+        x = calc_hog(nor_im,5,4,4);
+        x = bsxfun(@times, x, cos_window);
         data = cat(3,data,x);
         id =id +1;
     end

@@ -11,7 +11,9 @@
 
 function [df] = argmin_d(sf, mu, Lf, Mx, Mf,lambda)
 
-d =  ifftvec((mu*sf + Lf)/(mu + (lambda/sqrt(prod(Mx)))), Mx , Mf) ;
+d =  ifftvec((mu*sf + Lf)/(mu + (lambda/sqrt(prod(Mx)))), Mx , Mf) ; %
+% inpaper
+% d = ifftvec(sf+(1/mu)*Lf,Mx,Mf);% original code
 df = fftvec(d, Mf, Mx);
 
 end

@@ -14,11 +14,13 @@ function xf = fftvec(x, mn, varargin)
     xf = zeros(M, N);
 %     for n=1:N, xf(:,n) = reshape(fft2(reshape(x(:,n), mn), pad(1), pad(2)), M, 1); end
     for n=1:N, xf(:,n) = reshape(fft2(padding(reshape(x(:,n), mn),mn,pad)), M, 1); end
+%     xf = xf*sqrt(M);
   else
     xf = zeros(M, N);
     for n=1:N
         xf(:,n) = reshape(fft2(reshape(x(:,n), mn)), M, 1);
     end
   end  
+  
 end
 

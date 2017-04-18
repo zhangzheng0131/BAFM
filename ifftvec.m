@@ -8,7 +8,7 @@
 %
 %   See also fftvec
 function x = ifftvec(xf, mn, varargin)
-  [M, N] = size(xf);
+  [T, N] = size(xf);
   if nargin == 3
     crop  = varargin{1};
     M = prod(crop); 
@@ -18,9 +18,10 @@ function x = ifftvec(xf, mn, varargin)
 %        x(:,n) = reshape(ff( 1:crop(1), 1:crop(2)), M, 1); 
          x(:,n) = reshape(cropping(ff,mn,crop), M, 1); 
     end
+%     x = x/sqrt(T);
   else
-    x = zeros(M, N);
-    for n=1:N, x(:,n) = reshape(ifft2(reshape(xf(:,n), mn),'symmetric'), M, 1); end
+    x = zeros(T, N);
+    for n=1:N, x(:,n) = reshape(ifft2(reshape(xf(:,n), mn),'symmetric'), T, 1); end
   end  
 end
 
