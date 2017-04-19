@@ -60,7 +60,7 @@ switch param.search_area_shape
 end
 
 if param.features.colorProbHoG || param.features.greyHoG
-    param.features.cell_size = 1;
+    param.features.cell_size = 4;
 else
     param.features.cell_size = 1;
 end

@@ -12,7 +12,7 @@ param.debug = 0;
 
 param.ADMM_iteration = 2;
 param.search_area_scale =5;
-param.filter_size = 1.1;
+param.filter_size = 1.2;
 param.output_sigma_factor = 1/16;
 
 param.ini_imgs=8;
@@ -29,8 +29,8 @@ param.maxMu=1000;
 
 %% CCOT tricks
 param.search_area_shape = 'square';
-param.min_image_sample_size = 200^2;   % Minimum area of image samples
-param.max_image_sample_size = 300^2;   % Maximum area of image samples
+param.min_image_sample_size = 400^2;   % Minimum area of image samples
+param.max_image_sample_size = 600^2;   % Maximum area of image samples
 
 
 % 
