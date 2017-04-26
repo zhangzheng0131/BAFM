@@ -11,15 +11,27 @@ function xf = fftvec(x, mn, varargin)
   if nargin == 3
     pad = varargin{1};
     M  = prod(pad);
-    xf = zeros(M, N);
+%     xf = zeros(M, N);
 %     for n=1:N, xf(:,n) = reshape(fft2(reshape(x(:,n), mn), pad(1), pad(2)), M, 1); end
-    for n=1:N, xf(:,n) = reshape(fft2(padding(reshape(x(:,n), mn),mn,pad)), M, 1); end
+%     for n=1:N
+%         a = reshape(x(:,n), mn);
+%         b=padding(a,mn,pad);
+%         c = fft2(b);
+%         xf(:,n) = reshape(c, M, 1); 
+%     end
+    x = reshape(x,[mn(1) mn(2) N]);
+    xpad = padding(x,mn,pad);
+    xf = fft2(xpad);
+    xf = reshape(xf,[M N]);
 %     xf = xf*sqrt(M);
   else
-    xf = zeros(M, N);
-    for n=1:N
-        xf(:,n) = reshape(fft2(reshape(x(:,n), mn)), M, 1);
-    end
+%     xf = zeros(M, N);
+%     for n=1:N
+%         xf(:,n) = reshape(fft2(reshape(x(:,n), mn)), M, 1);
+%     end
+    x = reshape(x,[mn(1) mn(2) N]);
+    xf = fft2(x);
+    xf = reshape(xf,[M N]);
   end  
   
 end
