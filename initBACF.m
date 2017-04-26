@@ -31,16 +31,20 @@ model.firstImg = img;
 %% 
 
 
+% 
+% search_area = prod(target_sz * param.search_area_scale);
 
-search_area = prod(target_sz * param.search_area_scale);
+% if search_area > param.max_image_sample_size
+%     model.currentScaleFactor = sqrt(search_area / param.max_image_sample_size);
+% elseif search_area < param.min_image_sample_size
+%     model.currentScaleFactor = sqrt(search_area / param.min_image_sample_size);
+% else
+%     model.currentScaleFactor = 1.0;
+% end
 
-if search_area > param.max_image_sample_size
-    model.currentScaleFactor = sqrt(search_area / param.max_image_sample_size);
-elseif search_area < param.min_image_sample_size
-    model.currentScaleFactor = sqrt(search_area / param.min_image_sample_size);
-else
-    model.currentScaleFactor = 1.0;
-end
+search_area = prod(target_sz*param.filter_size);
+
+model.currentScaleFactor = sqrt(search_area / param.fix_model_size);
 
 % target size at the initial scale
 target_sz = target_sz / model.currentScaleFactor;
