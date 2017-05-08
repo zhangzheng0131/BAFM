@@ -28,7 +28,8 @@ if isInit
     model.Ldsf  = zeros(prod(b_filt_sz), Nchannel);
   
 else
-    model.ZX = ((1-param.etha) * model.ZX) + (param.etha *  conj(xf) .* model.yf);
+    tmp = bsxfun(@times, conj(xf), model.yf);
+    model.ZX = ((1-param.etha) * model.ZX) + (param.etha *  tmp);
     model.ZZ = ((1-param.etha) * model.ZZ) + (param.etha * conj(xf) .* xf);
     model.X = ((1-param.etha) * model.X) + (param.etha * xf);
 end

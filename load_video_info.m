@@ -30,6 +30,8 @@ function [img_files, pos, target_sz, ground_truth, video_path,datasetParam] = lo
             filename = [video_path 'groundtruth.txt'];
         case 'VOT15'
             filename = [video_path 'groundtruth.txt'];
+        otherwise
+            filename = [video_path 'groundtruth_rect' suffix '.txt'];
    end
     
 	f = fopen(filename);
@@ -67,6 +69,14 @@ function [img_files, pos, target_sz, ground_truth, video_path,datasetParam] = lo
                     frewind(f);
                     ground_truth = textscan(f, '%f %f %f %f');  
                 end   
+                
+            otherwise
+                try
+                    ground_truth = textscan(f, '%f,%f,%f,%f', 'ReturnOnError',false);  
+                catch  % #ok, try different format (no commas)
+                    frewind(f);
+                    ground_truth = textscan(f, '%f %f %f %f');  
+                end
         end
     else
         	filename = [video_path 'init.txt'];
@@ -100,7 +110,7 @@ function [img_files, pos, target_sz, ground_truth, video_path,datasetParam] = lo
 	
 	
 	%from now on, work in the subfolder where all the images are
-    if strcmp(dataset,'TB-50')
+    if ~strcmp(dataset,'RGBD') && ~strcmp(dataset,'VOT14') && ~strcmp(dataset,'VOT15')
         video_path = [video_path 'img/'];
     end
     
@@ -109,6 +119,7 @@ function [img_files, pos, target_sz, ground_truth, video_path,datasetParam] = lo
 
     %general case, just list all images
     img_files = dir([video_path '*.png']);
+    img_files = sort({img_files.name});
     if isempty(img_files),
         if strcmp(dataset,'RGBD')
             img_files = dir([video_path 'rgb/*.png']);
