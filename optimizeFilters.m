@@ -38,6 +38,13 @@ end
     model.s_filt_sz, param.term, 1,param.ADMM_iteration, model.sf, model.df,...
     model.Ldsf,model.ZZ,model.ZX, param.debug,param,model);
 
+%% Init color map
+
+[model.bg_hist, model.fg_hist] = updateHistModel(model.new_pwp_model,...
+    patch, model.bg_area, model.fg_area, round(model.last_target_sz),...
+    param.norm_bg_area, param.n_bins, param.grayscale_sequence,...
+     model.bg_hist,model.fg_hist,param.learning_rate_pwp);
+
 
 
 end

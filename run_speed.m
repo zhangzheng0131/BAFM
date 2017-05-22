@@ -16,7 +16,7 @@ datasets={
 %ask the user for the video, then call self with that video name.
 % [video, base_path, dataset] = choose_video(datasets);
 
-video = 'Jogging-1';
+video = 'Bolt2';
 base_path = '~/Data/tb100/';
 dataset='TB-50';
 

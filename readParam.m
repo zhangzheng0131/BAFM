@@ -34,6 +34,14 @@ param.max_image_sample_size = 300^2;   % Maximum area of image samples
 
 param.fix_model_size = 80^2;
 
+%% color settings
+param.inner_padding = 0.2; 
+param.n_bins = 2^5; 
+param.learning_rate_pwp = 0.04;
+param.merge_method = 'const_factor';
+param.merge_factor = 0.3;
+
+
 % 
 % %% here is nsamf parameters
 % 

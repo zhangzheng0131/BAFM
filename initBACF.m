@@ -26,7 +26,6 @@ if resize_image
     target_sz = floor(target_sz / resize_scale);
 end
 
-model.firstImg = img;
 
 %% 
 
@@ -42,9 +41,9 @@ model.firstImg = img;
 %     model.currentScaleFactor = 1.0;
 % end
 
-search_area = prod(target_sz*param.filter_size);
+model_area = prod(target_sz*param.filter_size);
 
-model.currentScaleFactor = sqrt(search_area / param.fix_model_size);
+model.currentScaleFactor = sqrt(model_area / param.fix_model_size);
 
 % target size at the initial scale
 target_sz = target_sz / model.currentScaleFactor;
@@ -68,6 +67,10 @@ if param.features.colorProbHoG || param.features.greyHoG
 else
     param.features.cell_size = 1;
 end
+sz=round(sz);
+tsz = round(target_sz);
+sz = sz - mod(sz - tsz, 2);
+
 s_filt_sz = floor(target_sz*param.filter_size);
 s_filt_sz=floor(s_filt_sz / param.features.cell_size);
 b_filt_sz=floor(sz / param.features.cell_size);
@@ -90,6 +93,10 @@ yf = fftvec(y(:), b_filt_sz);
 
 model.yf = yf;%fft2(gaussian_shaped_labels(output_sigma, sz));
 
+model.firstImg = img;
+model.last_pos=pos;
+model.last_target_sz = target_sz;
+
 param.window_sz = sz;
 % param.output_sigma = output_sigma;
 
@@ -101,6 +108,9 @@ if size(img,3)==1
     param.features.colorProb=0;
     param.features.colorProbHoG=0;
     param.features.colorName = 0;
+    param.grayscale_sequence = true;
+else
+    param.grayscale_sequence = false;
 end
 model.s_filt_sz=s_filt_sz;
 model.b_filt_sz=b_filt_sz;
@@ -114,7 +124,37 @@ model.b_filt_sz=b_filt_sz;
 % model.model_alphaf = alphaf;
 % model.model_xf = xf;
 
+
+%% init for color
+
+% % we want a regular frame surrounding the object
+avg_dim = sum(tsz)/2;
+% size from which we extract features
+% bg_area = round(params.target_sz + avg_dim);
+bg_area = round(sz);
+% pick a "safe" region smaller than bbox to avoid mislabeling
+fg_area = round(tsz - avg_dim * param.inner_padding);
+% % saturate to image size
+% if(bg_area(2)>size(img,2)), bg_area(2)=size(img,2)-1; end
+% if(bg_area(1)>size(img,1)), bg_area(1)=size(img,1)-1; end
+% make sure the differences are a multiple of 2 (makes things easier later in color histograms)
+bg_area = bg_area - mod(bg_area - tsz, 2);
+fg_area = fg_area + mod(bg_area - fg_area, 2);
+
+% Compute the rectangle with (or close to) params.fixedArea and
+% same aspect ratio as the target bbox
+% area_resize_factor = sqrt(param.fixed_area/prod(bg_area));
+param.norm_bg_area = round(bg_area );%* area_resize_factor
+
+model.new_pwp_model = true;
+model.bg_area = bg_area;
+model.fg_area = fg_area;
+model.bg_hist = [];
+model.fg_hist = [];
 model = optimizeFilters( img, pos, model.currentScaleFactor, param,model, 1 );
+
+
+model.new_pwp_model = false;
 
 %% scale
 if param.nScales > 0
@@ -170,8 +210,7 @@ end
 
 
 %%
-model.last_pos=pos;
-model.last_target_sz = target_sz;
+
 
 
 
