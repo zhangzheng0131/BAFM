@@ -28,7 +28,7 @@ cropIm = reshape(cropIm,[MMx Nchannel]);%get_ini_perturbation(data, 8);
 
 response_cf = fftshift(rsp);
 
-response_cf = mexResize(response_cf, [size(x,1) size(x,2)], 'auto');
+% response_cf = mexResize(response_cf, [size(x,1) size(x,2)], 'auto');
 
 [likelihood_map] = getColourMap(x, model.bg_hist, model.fg_hist, param.n_bins, param.grayscale_sequence);
 % (TODO) in theory it should be at 0.5 (unseen colors shoud have max entropy)
@@ -36,7 +36,9 @@ likelihood_map(isnan(likelihood_map)) = 0;
 
 % each pixel of response_pwp loosely represents the likelihood that
 % the target (of size norm_target_sz) is centred on it
-response_pwp = getCenterLikelihood(likelihood_map,round(param.base_target_sz * model.currentScaleFactor));
+response_pwp = getCenterLikelihood(likelihood_map,floor(param.base_target_sz));
+
+response_pwp = mexResize(response_pwp,[floor(size(response_pwp,1)/4) floor(size(response_pwp,2)/4)],'auto');
 
 response_pwp = fillzeros(response_pwp,size(response_cf));
 
@@ -64,8 +66,8 @@ posRsp = [vert_delta-1, horiz_delta-1];
 param.display_rsp={};
 param.display_rsp{1}=response_cf;
 param.display_rsp{2}=response_pwp;
-% pos = pos + param.features.cell_size * posRsp * model.currentScaleFactor;
-pos = pos + posRsp * model.currentScaleFactor;
+pos = pos + param.features.cell_size * posRsp * model.currentScaleFactor;
+% pos = pos + posRsp * model.currentScaleFactor;
 %% for debug
 % rspTmp = rsp(posRsp(1)-floor(s_filt_sz(1)/2):posRsp(1)+floor(s_filt_sz(1)/2), ...
 % posRsp(2)-floor(s_filt_sz(2)/2):posRsp(2)+floor(s_filt_sz(2)/2));
