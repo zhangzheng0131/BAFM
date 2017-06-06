@@ -32,9 +32,10 @@ else
     model.ZX = ((1-param.etha) * model.ZX) + (param.etha *  tmp);
     model.ZZ = ((1-param.etha) * model.ZZ) + (param.etha * conj(xf) .* xf);
     model.X = ((1-param.etha) * model.X) + (param.etha * xf);
+%     param.mu = model.mu;
 end
 
-[model.df, model.sf, model.Ldsf, mu] = ECF(model.yf, b_filt_sz, Nchannel,...
+[model.df, model.sf, model.Ldsf, model.mu] = ECF(model.yf, b_filt_sz, Nchannel,...
     model.s_filt_sz, param.term, 1,param.ADMM_iteration, model.sf, model.df,...
     model.Ldsf,model.ZZ,model.ZX, param.debug,param,model);
 
