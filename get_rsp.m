@@ -1,9 +1,5 @@
 function [rsp pos] = get_rsp( cropIm, df, s_filt_size, b_filt_size)
-%% why calculate again?
-d = ifftvec(df, b_filt_size, s_filt_size);
-df = fftvec(d, s_filt_size, b_filt_size);
 sz=b_filt_size;
-%%
 rsp = fftvec(cropIm, b_filt_size).*df;
 rsp = sum(rsp,2);
 rsp = reshape(rsp, b_filt_size);

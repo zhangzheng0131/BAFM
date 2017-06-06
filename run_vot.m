@@ -6,14 +6,9 @@ function run_vot
 % coded by Li, Yang, 2015
 
 
-% cleanup = onCleanup(@() exit() ); % Always call exit command at the end to terminate Matlab!
+cleanup = onCleanup(@() exit() ); % Always call exit command at the end to terminate Matlab!
 RandStream.setGlobalStream(RandStream('mt19937ar', 'Seed', sum(clock))); % Set random seed to a different value every time as required by the VOT rules.
 
-addpath('./CFwLB');
-addpath('./dsst');
-addpath('./staple');
-% addpath('./features');
-% addpath('./display');
 
 [handle, image, region] = vot('rectangle'); % Obtain communication object
 
