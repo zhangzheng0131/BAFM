@@ -39,7 +39,9 @@ param.inner_padding = 0.2;
 param.n_bins = 2^5; 
 param.learning_rate_pwp = 0.04;
 param.merge_method = 'const_factor';
-param.merge_factor = 0;
+%param.merge_factor = 0;
+
+param.merge_factor = 0.3;
 
 
 % 
