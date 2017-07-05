@@ -17,7 +17,8 @@ model.last_pos=pos;
 model.last_target_sz = target_sz;
 
 model.currentScaleFactor = currentScaleFactor;
-
+%model.currentScaleFactor = 0.5024;
+%currentScaleFactor= 0.5024;
 model = optimizeFilters( img, pos, currentScaleFactor, param,model, 0 );
 
 

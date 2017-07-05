@@ -4,14 +4,18 @@ function data = calculateFeatures(rawdata, features,cos_window)
 
     if features.grey 
        x= rawdata.patch;
+       
        if ~equalSZ(x,features.sz)
-           x = imresize(x,features.sz);
+           %x = imresize(x,features.sz,'bilinear','AntiAliasing',false);
+           %x = imresize(x,features.sz(1)/size(rawdata.patch,1),'bilinear','AntiAliasing',false);
+           x=mexResize(x,features.sz,'auto');
+           
        end
        x= (double(x) / 255) - 0.5;
        x = bsxfun(@times, x, cos_window);
 %        data{5} =x;
        data = x;
-       id =id +1;
+       id =id +1;   
  
     end
     

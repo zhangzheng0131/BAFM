@@ -29,7 +29,8 @@ while (i <=maxItr) || (1 > term && i <= maxItr)
     Ldsf = Ldsf + (mu * (sf - df));
     mu = min(beta * mu, mumax);
 
-    % ----------------------------------------
+    % ---------
+    %------------------------------
     % Visualizing the filters
 
     if Visfilt
