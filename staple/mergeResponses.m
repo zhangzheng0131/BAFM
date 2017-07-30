@@ -1,7 +1,18 @@
 function [response] = mergeResponses(response_cf, response_pwp, alpha, merge_method)
 %MERGERESPONSES interpolates the two responses with the hyperparameter ALPHA
+amax=max(max(response_cf));
+[at bt]=find(response_cf==amax);
+atemp=response_cf;
+atemp(at,bt)=-1;
+bmax=max(max(atemp));
+
+
     if strcmp(merge_method, 'const_factor')
-        response = (1 - alpha) * response_cf + alpha * response_pwp;
+        if((abs(abs((amax-bmax))/amax)<0.02)&(abs(amax)<1.6)&(abs(amax-bmax)<0.03))
+            response = (1 - alpha) * response_cf + alpha * response_pwp;
+        else
+            response=response_cf;
+        end
     end
 
     if strcmp(merge_method, 'fit_gaussian')
