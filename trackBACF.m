@@ -41,7 +41,14 @@ response_pwp = getCenterLikelihood(likelihood_map,floor(param.base_target_sz));
 response_pwp = mexResize(response_pwp,[floor(size(response_pwp,1)/4) floor(size(response_pwp,2)/4)],'auto');
 
 response_pwp = fillzeros(response_pwp,size(response_cf));
-
+%figure(341)
+%mesh(response_cf);
+%pause(1);
+%close(figure(341));
+%figure(342)
+%mesh(response_pwp);     
+%pause(1);
+%close(figure(342));
 response = mergeResponses(response_cf, response_pwp, param.merge_factor, param.merge_method);
 
 sz=size(response);

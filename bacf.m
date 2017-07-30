@@ -47,7 +47,7 @@ for frame=2:numel(img_files)
     time = toc + time;
     
     if isempty(datasetParam)
-        param = displayManager(img,rect,model,param);
+  %  param = displayManager(img,rect,model,param);
     end
 end
 if param.resize_image
